@@ -5,15 +5,50 @@
     <title>BitPay invoices converter</title>
     <script>
         function convertLink(bitpayURL){
-            alert(bitpayURL);
+            let fullLinkMatch = bitpayURL.match(/bitpay\.com\/i\/(.*?)$/);
+            let paymentID =
+                fullLinkMatch === null ? bitpayURL : // Payment ID was provided, without link
+                fullLinkMatch[1]; // Extracted from link payment id
+            let requestURL = 'https://bitpay.com/i/' + paymentID;
+
+            let infoElement = document.getElementById('infoText');
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', requestURL);
+            xhr.setRequestHeader("Accept", "application/payment-request");
+            infoElement.innerHTML = '<span style="color:grey;">Loading data for invoice ' +paymentID+ ', please wait...</span>';
+            xhr.onload = function() {
+                let responseStatus = this.status;
+                let responseText = this.responseText;
+                if (responseStatus === 400){ // Expired invoice
+                    infoElement.innerHTML = '<span style="color:red;">' + responseText + '</span>';
+                }
+                else if (responseStatus === 200){ // Good invoice
+                    let invoiceData = JSON.parse(responseText);
+                    // 0.010048 BTC "amount":1004800,
+                    let expiresDate = new Date(invoiceData['expires']);
+                    let walletAddress = invoiceData['outputs'][0]['address'];
+                    let sendAmount = invoiceData['outputs'][0]['amount']; // Amount in satoshis
+                    let recommendedComission = invoiceData['requiredFeeRate']; // Comission in satoshis/byte
+
+                    document.getElementById('walletAddress').value = walletAddress;
+                    document.getElementById('sendAmount').value = sendAmount / Math.pow(10, 8); // Convert satoshis to BTC
+                    document.getElementById('recommendedComission').value = recommendedComission.toFixed(0); // Convert satoshis to BTC
+
+                    infoElement.innerHTML = '<span style="color:black;">' + invoiceData['memo'] + '<br>Expires in ' + ((expiresDate.getTime() - Date.now()) / 1000 / 60).toFixed(1) + ' minutes</span>';
+                }
+                else {
+                    infoElement.innerHTML = '<span style="color:red;">' + responseStatus + ': ' +  responseText + '</span>';
+                }
+            }
+            xhr.send();
         }
     </script>
 </head>
 <body>
-    BitPay link: <input type="text" size="50" id="linkURL" onchange="javascript:convertLink(this.value);">
+    BitPay invoice link: <input type="text" size="70" id="linkURL" onchange="convertLink(this.value);" placeholder="bitcoin:?r=https://bitpay.com/i/3G2k2TiVobUVUgQuMjuvRR">
     <hr>
-    Pay address: <input type="text" size="50" id="walletAddress" readonly="readonly"><br>
-    Pay amount: <input type="text" size="10" id="sendAmount" readonly="readonly"> BTC<br>
-    Recommended comission: <input type="text" size="50" id="recommendedComission" readonly="readonly"> satoshis/byte
+    <span id="infoText">Please inpu bitpay invoice link above</span><br>
+    Pay address: <input type="text" size="40" id="walletAddress" readonly="readonly" onFocus="this.select();"><br>
+    Pay amount: <input type="text" size="7" id="sendAmount" readonly="readonly" onFocus="this.select();"> BTC, recommended comission: <input type="text" size="3" id="recommendedComission" readonly="readonly"> satoshis/byte
 </body>
 </html>
