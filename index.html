@@ -22,9 +22,11 @@
                 if (responseStatus === 400){ // Expired invoice
                     infoElement.innerHTML = '<span style="color:red;">' + responseText + '</span>';
                 }
+                else if (responseStatus === 404){ // Bad invoice
+                    infoElement.innerHTML = '<span style="color:red;">' + responseText + '</span>';
+                }
                 else if (responseStatus === 200){ // Good invoice
                     let invoiceData = JSON.parse(responseText);
-                    // 0.010048 BTC "amount":1004800,
                     let expiresDate = new Date(invoiceData['expires']);
                     let walletAddress = invoiceData['outputs'][0]['address'];
                     let sendAmount = invoiceData['outputs'][0]['amount']; // Amount in satoshis
@@ -47,7 +49,7 @@
 <body>
     BitPay invoice link: <input type="text" size="60" id="linkURL" onFocus="this.select();" onchange="convertLink(this.value);" placeholder="bitcoin:?r=https://bitpay.com/i/3G2k2TiVobUVUgQuMjuvRR">
     <hr>
-    <span id="infoText">Please inpu bitpay invoice link above</span><br>
+    <span id="infoText">Please input BitPay invoice link above</span><br>
     Pay address: <input type="text" size="40" id="walletAddress" readonly="readonly" onFocus="this.select();"><br>
     Pay amount: <input type="text" size="7" id="sendAmount" readonly="readonly" onFocus="this.select();"> BTC, recommended comission: <input type="text" size="2" id="recommendedComission" readonly="readonly"> satoshis/byte
 </body>
