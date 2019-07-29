@@ -45,10 +45,10 @@
     </script>
 </head>
 <body>
-    BitPay invoice link: <input type="text" size="70" id="linkURL" onchange="convertLink(this.value);" placeholder="bitcoin:?r=https://bitpay.com/i/3G2k2TiVobUVUgQuMjuvRR">
+    BitPay invoice link: <input type="text" size="60" id="linkURL" onFocus="this.select();" onchange="convertLink(this.value);" placeholder="bitcoin:?r=https://bitpay.com/i/3G2k2TiVobUVUgQuMjuvRR">
     <hr>
     <span id="infoText">Please inpu bitpay invoice link above</span><br>
     Pay address: <input type="text" size="40" id="walletAddress" readonly="readonly" onFocus="this.select();"><br>
-    Pay amount: <input type="text" size="7" id="sendAmount" readonly="readonly" onFocus="this.select();"> BTC, recommended comission: <input type="text" size="3" id="recommendedComission" readonly="readonly"> satoshis/byte
+    Pay amount: <input type="text" size="7" id="sendAmount" readonly="readonly" onFocus="this.select();"> BTC, recommended comission: <input type="text" size="2" id="recommendedComission" readonly="readonly"> satoshis/byte
 </body>
 </html>
