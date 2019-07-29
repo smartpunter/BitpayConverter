@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>BitPay invoices converter</title>
+    <script>
+        function convertLink(bitpayURL){
+            alert(bitpayURL);
+        }
+    </script>
 </head>
 <body>
-
+    BitPay link: <input type="text" size="50" id="linkURL" onchange="javascript:convertLink(this.value);">
+    <hr>
+    Pay address: <input type="text" size="50" id="walletAddress" readonly="readonly"><br>
+    Pay amount: <input type="text" size="10" id="sendAmount" readonly="readonly"> BTC<br>
+    Recommended comission: <input type="text" size="50" id="recommendedComission" readonly="readonly"> satoshis/byte
 </body>
 </html>
