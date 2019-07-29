@@ -1,0 +1,12 @@
+{
+  "name": "bitpay_converter",
+  "version": "1.0.0",
+  "description": "Converts bitpay links to wallet address, amount and recommended comission.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["bitpay"],
+  "author": "DimOK",
+  "license": "ISC"
+}
